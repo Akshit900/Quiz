@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+       
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: rgb(30, 9, 214);
+            color: rgb(99, 236, 84);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: beige;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .quiz-header {
+            margin-bottom: 50px;
+        }
+
+        .options {
+            list-style-type: none;
+            padding: 0;
+            color: black;
+        }
+
+        .options li {
+            margin-bottom: 10px;
+        }
+
+        .options input {
+            margin-right: 15px;
+        }
+
+        #submit {
+            background-color: #f52d6c;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #submit:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2 id="question">Question text</h2>
+            <ul class="options">
+                <li><input type="radio" name="option" id="option1"><label for="option1" id="option1_text">Option 1</label></li>
+                <li><input type="radio" name="option" id="option2"><label for="option2" id="option2_text">Option 2</label></li>
+                <li><input type="radio" name="option" id="option3"><label for="option3" id="option3_text">Option 3</label></li>
+                <li><input type="radio" name="option" id="option4"><label for="option4" id="option4_text">Option 4</label></li>
+            </ul>
+        </div>
+        <button id="submit">Submit</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        
+        const quizData = [
+            {
+                question: " What planet is known as the Red Planet?",
+                options: ["Venus","Mars","Jupiter","Saturn"],
+                correct: 1
+            },
+            {
+                question: "What is the chemical symbol for water?",
+                options: ["H","O","CO₂", "H₂O"],
+                correct: 3
+            },
+            {
+                question: "How many seconds make one hour?",
+                options: ["3600", "60", "36000", "6000"],
+                correct: 0
+            },
+            {
+                question: "What is the boiling point of water at sea level?",
+                options: ["90°C", "100°C", "110°C", "120°C"],
+                correct: 2
+            },
+            {
+                question: "What is the largest planet in our solar system?",
+                options: ["Earth","Saturn","Pluto","Jupiter"],
+                correct: 3
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionEl = document.getElementById("question");
+        const optionsEls = document.querySelectorAll(".options li input");
+        const optionsTextEls = document.querySelectorAll(".options li label");
+        const submitBtn = document.getElementById("submit");
+        const resultEl = document.getElementById("result");
+
+        loadQuiz();
+
+        function loadQuiz() {
+            deselectOptions();
+
+            const currentQuizData = quizData[currentQuestion];
+
+            questionEl.innerText = currentQuizData.question;
+            optionsEls.forEach((option, index) => {
+                optionsTextEls[index].innerText = currentQuizData.options[index];
+            });
+        }
+
+        function deselectOptions() {
+            optionsEls.forEach(option => option.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            optionsEls.forEach((option, index) => {
+                if (option.checked) {
+                    answer = index;
+                }
+            });
+            return answer;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+
+            if (answer !== undefined) {
+                if (answer === quizData[currentQuestion].correct) {
+                    score++;
+                }
+
+                currentQuestion++;
+
+                if (currentQuestion < quizData.length) {
+                    loadQuiz();
+                } else {
+                    resultEl.innerHTML = `
+                        <h3>You answered ${score}/${quizData.length} Questions Correctly</h3>
+                        <button onclick="location.reload()">Reload</button>
+                    `;
+                    submitBtn.style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
